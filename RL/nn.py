@@ -5,15 +5,15 @@ import numpy as np
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Deterministic Policy Network architucture
+# Deterministic Policy Network Architucture
 class DeterministicPolicyNetwork(nn.Module):
     def __init__(self, state_dim, action_dim, hidden_dim, action_max):
         super().__init__()
         self.fc1 = nn.Linear(state_dim, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, action_dim)
         self.action_dim = action_dim
-        self.action_max = torch.tensor(action_max)
-        self.uncertainty = torch.tensor(action_max)
+        self.action_max = torch.tensor(action_max).to(device)
+        self.uncertainty = torch.tensor(action_max).to(device)
 
     def forward(self, state):
         x = F.relu(self.fc1(state))
@@ -24,10 +24,10 @@ class DeterministicPolicyNetwork(nn.Module):
         if isinstance(state, np.ndarray):
             state = torch.tensor(state, dtype=torch.float32)
         action = self(state.to(device))*self.action_max
-        return action + torch.randn(self.action_dim).to(device)*self.uncertainty
+        return action #+ torch.randn(self.action_dim).to(device)*self.uncertainty
 
 
-# Guassian Policy Network architucture
+# Guassian Policy Network Architucture
 class GuassianPolicyNetwork(nn.Module):
     def __init__(self, state_dim, action_dim, hidden_dim, action_max):
         super().__init__()
@@ -54,7 +54,7 @@ class GuassianPolicyNetwork(nn.Module):
         return action, log_prob
 
 
-# Categorical Policy Network architucture
+# Categorical Policy Network Architucture
 class CategoricalPolicyNetwork(nn.Module):
     def __init__(self, state_dim, action_dim, hidden_dim):
         super().__init__()
@@ -75,7 +75,7 @@ class CategoricalPolicyNetwork(nn.Module):
         return action, dist.log_prob(action)
 
 
-# Value Network architucture
+# Value Network Architucture
 class ValueNetwork(nn.Module):
     def __init__(self, state_dim, hidden_dim):
         super().__init__()
@@ -88,7 +88,7 @@ class ValueNetwork(nn.Module):
         return value
 
 
-# Q-Network architecture
+# Q-Network Architecture
 class QNetwork(nn.Module):
     def __init__(self, state_dim, action_dim, hidden_dim):
         super().__init__()
@@ -102,7 +102,7 @@ class QNetwork(nn.Module):
         return q_value
     
 
-# Deep Q-Network architecture (DQN)
+# Deep Q-Network Architecture (DQN)
 class DQNetwork(nn.Module):
     def __init__(self, state_dim, action_dim, hidden_dim, epsilon):
         super().__init__()
@@ -121,3 +121,16 @@ class DQNetwork(nn.Module):
             return torch.randint(self.action_dim, (1,))
         q_values = self(torch.tensor(state).to(device))
         return torch.argmax(q_values)
+    
+# Observer Network Architecture
+class ObserverNetwork(nn.Module):
+    def __init__(self, state_dim, input_dim, hidden_dim):
+        super().__init__()
+        self.fc1 = nn.Linear(state_dim + input_dim, hidden_dim)
+        self.fc2 = nn.Linear(hidden_dim, state_dim)
+
+    def forward(self, state, action):
+        x = torch.cat([state, action], dim=-1)
+        x = F.relu(self.fc1(x))
+        next_state = self.fc2(x)
+        return next_state
