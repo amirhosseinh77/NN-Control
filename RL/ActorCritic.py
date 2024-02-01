@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import numpy as np
 from RL.nn import DeterministicPolicyNetwork, ValueNetwork, ObserverNetwork
 from RL.plot import plot_return
+from utils.buffer import ReplayBuffer
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -24,13 +25,20 @@ class ActorCriticAgent():
     #     self.memory.append(new_experience)
 
     def learn(self, state, action, reward, next_state, done, gamma=0.99):
+        
         # states, actions, rewards, next_states, dones = zip(*self.memory)
 
-        state_tensor = torch.tensor(state).view(1,-1).to(torch.float32).to(device)
-        next_state_tensor = torch.tensor(next_state).view(1,-1).to(torch.float32).to(device)
-        action = torch.tensor(action).view(1,-1).to(torch.float32).to(device)
-        reward = torch.tensor(reward).view(1,-1).to(torch.float32).to(device)
-        done = torch.tensor(done).view(1,-1).to(torch.float32).to(device)
+        # state_tensor = torch.tensor(state).view(1,-1).to(torch.float32).to(device)
+        # next_state_tensor = torch.tensor(next_state).view(1,-1).to(torch.float32).to(device)
+        # action = torch.tensor(action).view(1,-1).to(torch.float32).to(device)
+        # reward = torch.tensor(reward).view(1,-1).to(torch.float32).to(device)
+        # done = torch.tensor(done).view(1,-1).to(torch.float32).to(device)
+
+        state_tensor = torch.tensor(state).to(torch.float32).to(device)
+        next_state_tensor = torch.tensor(next_state).to(torch.float32).to(device)
+        action = torch.tensor(action).to(torch.float32).to(device).view(-1,1)
+        reward = torch.tensor(reward).to(torch.float32).to(device).view(-1,1)
+        done = torch.tensor(done).to(torch.float32).to(device).view(-1,1)
         # print(state_tensor.shape, next_state_tensor.shape, action.shape, reward.shape, done.shape)
 
         
@@ -53,7 +61,8 @@ class ActorCriticAgent():
         self.critic_optimizer.step()
 
         # Compute Actor Loss
-        actor_loss = -(reward + self.critic(self.observer(state_tensor, self.actor(state_tensor))))
+        actor_loss = -(reward + self.critic(self.observer(state_tensor, self.actor(state_tensor)))).mean()
+        # print(observer_loss.shape, value_loss.shape, actor_loss.shape)
         # Update Actor network
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
@@ -61,7 +70,8 @@ class ActorCriticAgent():
 
         # self.memory = []
 
-    def train(self, env, episodes):
+    def train(self, env, episodes, batch_size = 128):
+        self.memory = ReplayBuffer(buffer_size = batch_size)
         returns = []
         for episode in range(episodes):
             score = 0
@@ -71,12 +81,15 @@ class ActorCriticAgent():
             while not done and not truncated:
                 action = self.actor.select_action(state)
                 next_state, reward, done, truncated, info = env.step((action.item(),))
-                self.learn(state, action, reward, next_state, done)
+                self.memory.push([state, action, reward, next_state, done])
+                if len(self.memory) == batch_size:
+                    states, actions, rewards, next_states, dones = self.memory.sample(batch_size)
+                    self.learn(states, actions, rewards, next_states, dones)
                 # self.push_memory()
                 score += reward
                 state = next_state
-            print(score)
+            # print(score)
             returns.append(score)
-            # plot_return(returns, f'Actor Critic ({device})')
+            plot_return(returns, f'Actor Critic ({device})')
         env.close()
         return returns
