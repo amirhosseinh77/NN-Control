@@ -60,8 +60,11 @@ class ActorCriticAgent():
         value_loss.backward()
         self.critic_optimizer.step()
 
+        self.critic_optimizer.zero_grad()
+        self.observer_optimizer.zero_grad()
+
         # Compute Actor Loss
-        actor_loss = -(reward + self.critic(self.observer(state_tensor, self.actor(state_tensor)))).mean()
+        actor_loss = -(self.critic(self.observer(state_tensor, self.actor(state_tensor)))).mean()#reward + 
         # print(observer_loss.shape, value_loss.shape, actor_loss.shape)
         # Update Actor network
         self.actor_optimizer.zero_grad()
