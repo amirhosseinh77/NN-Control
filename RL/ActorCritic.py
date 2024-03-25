@@ -19,21 +19,7 @@ class ActorCriticAgent():
         self.critic_optimizer = optim.Adam(self.critic.parameters(), lr=lr, weight_decay=1e-4)
         self.observer_optimizer = optim.Adam(self.observer.parameters(), lr=lr, weight_decay=1e-4)
 
-
-    # def push_memory(self, state, action, reward, next_state, done):
-    #     new_experience = [state, action, reward, next_state, done]
-    #     self.memory.append(new_experience)
-
     def learn(self, state, action, reward, next_state, done, gamma=0.99):
-        
-        # states, actions, rewards, next_states, dones = zip(*self.memory)
-
-        # state_tensor = torch.tensor(state).view(1,-1).to(torch.float32).to(device)
-        # next_state_tensor = torch.tensor(next_state).view(1,-1).to(torch.float32).to(device)
-        # action = torch.tensor(action).view(1,-1).to(torch.float32).to(device)
-        # reward = torch.tensor(reward).view(1,-1).to(torch.float32).to(device)
-        # done = torch.tensor(done).view(1,-1).to(torch.float32).to(device)
-
         state_tensor = torch.tensor(state).to(torch.float32).to(device)
         next_state_tensor = torch.tensor(next_state).to(torch.float32).to(device)
         action = torch.tensor(action).to(torch.float32).to(device).view(-1,1)
@@ -41,7 +27,6 @@ class ActorCriticAgent():
         done = torch.tensor(done).to(torch.float32).to(device).view(-1,1)
         # print(state_tensor.shape, next_state_tensor.shape, action.shape, reward.shape, done.shape)
 
-        
         states_val = self.critic(state_tensor.detach())
         next_states_val = self.critic(next_state_tensor.detach())
         value_targets = reward + gamma * next_states_val * torch.logical_not(done)
@@ -64,17 +49,15 @@ class ActorCriticAgent():
         self.observer_optimizer.zero_grad()
 
         # Compute Actor Loss
-        actor_loss = -(self.critic(self.observer(state_tensor, self.actor(state_tensor)))).mean()#reward + 
+        actor_loss = -(reward + self.critic(self.observer(state_tensor, self.actor(state_tensor)))).mean()#reward + 
         # print(observer_loss.shape, value_loss.shape, actor_loss.shape)
         # Update Actor network
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
         self.actor_optimizer.step()
 
-        # self.memory = []
-
     def train(self, env, episodes, batch_size = 128):
-        self.memory = ReplayBuffer(buffer_size = batch_size)
+        self.memory = ReplayBuffer(buffer_size = 50*batch_size)
         returns = []
         for episode in range(episodes):
             score = 0
@@ -85,7 +68,7 @@ class ActorCriticAgent():
                 action = self.actor.select_action(state)
                 next_state, reward, done, truncated, info = env.step((action.item(),))
                 self.memory.push([state, action, reward, next_state, done])
-                if len(self.memory) == batch_size:
+                if len(self.memory) >= batch_size:
                     states, actions, rewards, next_states, dones = self.memory.sample(batch_size)
                     self.learn(states, actions, rewards, next_states, dones)
                 # self.push_memory()
