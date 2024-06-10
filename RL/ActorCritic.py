@@ -9,7 +9,7 @@ from utils.buffer import ReplayBuffer
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 class ActorCriticAgent():
-    def __init__(self, state_size, action_size, hidden_dim, action_max, lr=1e-3):
+    def __init__(self, state_size, action_size, hidden_dim, action_max, lr=1e-2):
         self.memory = []
         self.actor =  DeterministicPolicyNetwork(state_size, action_size, hidden_dim, action_max).to(device)
         self.critic = ValueNetwork(state_size, hidden_dim).to(device)
@@ -57,7 +57,7 @@ class ActorCriticAgent():
         self.actor_optimizer.step()
 
     def train(self, env, episodes, batch_size = 128):
-        self.memory = ReplayBuffer(buffer_size = 50*batch_size)
+        self.memory = ReplayBuffer(buffer_size = 30*batch_size)
         returns = []
         for episode in range(episodes):
             score = 0
@@ -66,6 +66,7 @@ class ActorCriticAgent():
             state, _ = env.reset()
             while not done and not truncated:
                 action = self.actor.select_action(state)
+                action += 0.1*torch.randn(action.shape).to(device)
                 next_state, reward, done, truncated, info = env.step((action.item(),))
                 self.memory.push([state, action, reward, next_state, done])
                 if len(self.memory) >= batch_size:

@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from IPython import display
 
-plt.style.use('fivethirtyeight')
-plt.rc('font', size=10)
+# plt.style.use('fivethirtyeight')
+# plt.rc('font', size=10)
 
 def plot_return(returns, agent, window=100):
     display.clear_output(wait=True)
