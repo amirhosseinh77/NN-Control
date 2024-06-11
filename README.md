@@ -4,7 +4,7 @@
 The controller utilizes Neural Networks to control a nonlinear dynamic system by tracking a given reference signal. The main goal is to minimize the error between the system output and the desired reference trajectory.
 
 ### Block Diagram
-![diagram](https://github.com/amirhosseinh77/NN-Control/assets/56114938/9a9bfd83-22eb-4d15-8a48-cdabfb918fa0)
+![diagram](https://github.com/amirhosseinh77/NN-Control/assets/56114938/9ac8d749-3166-4eff-9a87-12cf3d88a3e5)
 
 ### Components Description
 1. **RBF NN Reference Model**:
