@@ -8,7 +8,7 @@ The controller utilizes Neural Networks to control a nonlinear dynamic system by
 
 ##### Components Description
 1. **RBF NN Reference Model**:
-   - The reference model is defined by the transfer function (```mathG_m(s)```):
+   - The reference model is defined by the transfer function (```math G_m(s) ```):
      ```math
      G_m(s) = \frac{K}{\frac{1}{\omega_n^2}s^2 + \frac{2\xi}{\omega_n}s + 1}
      ```
