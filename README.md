@@ -12,8 +12,8 @@ The controller utilizes Neural Networks to control a nonlinear dynamic system by
      ```math
      G_m(s) = \frac{K}{\frac{1}{\omega_n^2}s^2 + \frac{2\xi}{\omega_n}s + 1}
      ```
-   - Generates the desired reference signal \( y_{\text{ref}}(k+1) \).
-   - Uses the reference input \( r(k) \) which is given by:
+   - Generates the desired reference signal.
+   - Uses the reference input which is given by:
      ```math
      r(k) = \sin\left(\frac{2\pi k}{25}\right) + \sin\left(\frac{2\pi k}{10}\right)
      ```
@@ -25,7 +25,7 @@ The controller utilizes Neural Networks to control a nonlinear dynamic system by
      ```
      
 3. **NN Controller**:
-   - Adjusts the control input \( u(k) \) to minimize the tracking error.
+   - Adjusts the control input to minimize the tracking error.
    - Utilizes gradients and parameters of the RBF NN model to update the control signal.
 
 
