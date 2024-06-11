@@ -32,7 +32,7 @@ The controller utilizes Neural Networks to control a nonlinear dynamic system by
 ### Result
 ![NN-based Control](https://github.com/amirhosseinh77/NN-Control/assets/56114938/8820083c-1c6b-42a9-8024-d386a51f6eb0)
 
-### References
+### Reference
 [1] Slema, S., Errachdi, A., & Benrejeb, M. (2018, March). A radial basis function neural network model reference adaptive controller for nonlinear systems. In 2018 15th International Multi-Conference on Systems, Signals & Devices (SSD) (pp. 958-964). IEEE.
 
 
