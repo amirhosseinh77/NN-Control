@@ -1,7 +1,7 @@
 # NN-based Control Methods for Dynamic Systems
 
 ## Reference Tracking Neural Network Controller for Dynamic Systems
-The controller utilizes Neural Networks to control a nonlinear dynamic system by tracking a given reference signal. The main goal is to minimize the error between the system output and the desired reference trajectory despite disturbances.
+The controller utilizes Neural Networks to control a nonlinear dynamic system by tracking a given reference signal. The main goal is to minimize the error between the system output and the desired reference trajectory.
 
 ### Block Diagram
 ![diagram](https://github.com/amirhosseinh77/NN-Control/assets/56114938/94b82545-6327-4938-a76c-7237c97b69f0)
