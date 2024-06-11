@@ -1,12 +1,12 @@
 # NN-based Control Methods for Dynamic Systems
 
-### Reference Tracking Neural Network Controller for Dynamic Systems
+## Reference Tracking Neural Network Controller for Dynamic Systems
 The controller utilizes Neural Networks to control a nonlinear dynamic system by tracking a given reference signal. The main goal is to minimize the error between the system output and the desired reference trajectory despite disturbances.
 
-##### Block Diagram
+### Block Diagram
 ![diagram](https://github.com/amirhosseinh77/NN-Control/assets/56114938/94b82545-6327-4938-a76c-7237c97b69f0)
 
-##### Components Description
+### Components Description
 1. **RBF NN Reference Model**:
    - The reference model is defined by the transfer function:
      ```math
@@ -29,10 +29,10 @@ The controller utilizes Neural Networks to control a nonlinear dynamic system by
    - Utilizes gradients and parameters of the RBF NN model to update the control signal.
 
 
-##### Result
+### Result
 ![NN-based Control](https://github.com/amirhosseinh77/NN-Control/assets/56114938/8820083c-1c6b-42a9-8024-d386a51f6eb0)
 
-##### References
+### References
 [1] Slema, S., Errachdi, A., & Benrejeb, M. (2018, March). A radial basis function neural network model reference adaptive controller for nonlinear systems. In 2018 15th International Multi-Conference on Systems, Signals & Devices (SSD) (pp. 958-964). IEEE.
 
 
