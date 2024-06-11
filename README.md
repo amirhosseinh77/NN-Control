@@ -7,7 +7,7 @@ The controller utilizes Neural Networks to control a nonlinear dynamic system by
 ![diagram](https://github.com/amirhosseinh77/NN-Control/assets/56114938/a5be77fe-4f61-4b5d-9da5-6a41cba9ec45)
 
 ### Components Description
-1. **RBF NN Reference Model**:
+1. **Reference Model**:
    - The reference model is defined by the transfer function:
      ```math
      G_m(s) = \frac{K}{\frac{1}{\omega_n^2}s^2 + \frac{2\xi}{\omega_n}s + 1}
