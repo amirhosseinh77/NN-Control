@@ -9,20 +9,20 @@ The controller utilizes Neural Networks to control a nonlinear dynamic system by
 ##### Components Description
 1. **RBF NN Reference Model**:
    - The reference model is defined by the transfer function \( G_m(s) \):
-     \[
+     ```math
      G_m(s) = \frac{K}{\frac{1}{\omega_n^2}s^2 + \frac{2\xi}{\omega_n}s + 1}
-     \]
+     ```
    - Generates the desired reference signal \( y_{\text{ref}}(k+1) \).
    - Uses the reference input \( r(k) \) which is given by:
-     \[
+     ```math
      r(k) = \sin\left(\frac{2\pi k}{25}\right) + \sin\left(\frac{2\pi k}{10}\right)
-     \]
+     ```
 
 2. **Dynamic System**:
    - The nonlinear dynamic system is represented by:
-     \[
+     ```math
      y(k+1) = \frac{y(k) y(k-1) u(k) + u^3(k) + 0.5 y(k-1)}{1 + y^2(k) + y^2(k-1)}
-     \]
+     ```
      
 3. **NN Controller**:
    - Adjusts the control input \( u(k) \) to minimize the tracking error.
